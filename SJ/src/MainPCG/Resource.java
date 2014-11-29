@@ -34,4 +34,14 @@ public class Resource {
 		
 		return null;
 	}
+	
+	public static List<String> LoadRules() {
+		try {
+			return Files.readAllLines(Paths.get("rules.txt"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		return null;
+	}
 }

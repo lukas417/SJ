@@ -1,6 +1,7 @@
 package MainPCG;
 
 import java.awt.Font;
+import java.util.List;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -28,13 +29,20 @@ public class Screen extends JFrame {
 	
 	private JScrollPane analysisSP;
 	
+	private JScrollPane rulesSP;
+	
+	private JTextArea rulesTA;
+	
 	private JButton analyzeBT;
 	
 	private String[][] matrix;
 	
+	private List<String> rules;
 	
-	public Screen(String[][] matrix) {
+	
+	public Screen(String[][] matrix, List<String> rules) {
 		this.matrix = matrix;
+		this.rules = rules;
 		initialize();
 	}
 	
@@ -47,20 +55,24 @@ public class Screen extends JFrame {
 	}
 	
 	private GroupLayout getCustomLayout() {
-	
 		GroupLayout layout = new GroupLayout(getContentPane());
 		layout.setHorizontalGroup(
 			layout.createParallelGroup(Alignment.LEADING)
 				.addGroup(layout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(layout.createParallelGroup(Alignment.LEADING)
-						.addComponent(getTablePA(), Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 1164, Short.MAX_VALUE)
+						.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
+							.addComponent(getTablePA(), GroupLayout.DEFAULT_SIZE, 735, Short.MAX_VALUE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(getRulesSP(), GroupLayout.PREFERRED_SIZE, 423, GroupLayout.PREFERRED_SIZE))
 						.addGroup(layout.createSequentialGroup()
 							.addGroup(layout.createParallelGroup(Alignment.LEADING)
-								.addComponent(getAnalyzeBT(), GroupLayout.PREFERRED_SIZE, 103, GroupLayout.PREFERRED_SIZE)
-								.addComponent(getInputSP(), GroupLayout.DEFAULT_SIZE, 420, Short.MAX_VALUE))
+								.addComponent(getInputSP(), GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
+								.addGroup(layout.createSequentialGroup()
+									.addComponent(getAnalyzeBT(), GroupLayout.PREFERRED_SIZE, 103, GroupLayout.PREFERRED_SIZE)
+									.addGap(326)))
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(getAnalysisSP(), GroupLayout.DEFAULT_SIZE, 732, Short.MAX_VALUE)))
+							.addComponent(getAnalysisSP(), GroupLayout.DEFAULT_SIZE, 735, Short.MAX_VALUE)))
 					.addContainerGap())
 		);
 		layout.setVerticalGroup(
@@ -68,14 +80,19 @@ public class Screen extends JFrame {
 				.addGroup(layout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(layout.createParallelGroup(Alignment.LEADING)
-						.addGroup(Alignment.TRAILING, layout.createSequentialGroup()
-							.addComponent(getInputSP(), GroupLayout.DEFAULT_SIZE, 590, Short.MAX_VALUE)
+						.addGroup(layout.createSequentialGroup()
+							.addComponent(getInputSP(), GroupLayout.DEFAULT_SIZE, 570, Short.MAX_VALUE)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(getAnalyzeBT(), GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE))
-						.addComponent(getAnalysisSP(), GroupLayout.DEFAULT_SIZE, 631, Short.MAX_VALUE))
+						.addComponent(getAnalysisSP(), GroupLayout.DEFAULT_SIZE, 611, Short.MAX_VALUE))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(getTablePA(), GroupLayout.PREFERRED_SIZE, 336, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap())
+					.addGroup(layout.createParallelGroup(Alignment.TRAILING)
+						.addGroup(layout.createSequentialGroup()
+							.addComponent(getTablePA(), GroupLayout.PREFERRED_SIZE, 356, GroupLayout.PREFERRED_SIZE)
+							.addContainerGap())
+						.addGroup(Alignment.LEADING, layout.createSequentialGroup()
+							.addComponent(getRulesSP(), GroupLayout.PREFERRED_SIZE, 356, GroupLayout.PREFERRED_SIZE)
+							.addContainerGap())))
 		);
 
 		
@@ -133,5 +150,29 @@ public class Screen extends JFrame {
 		}
 
 		return analyzeBT;
+	}
+	
+	public JScrollPane getRulesSP() {
+		if(rulesSP == null) {
+			rulesSP = new JScrollPane();
+			rulesSP.setViewportView(getRulesTA());
+		}
+
+		return rulesSP;
+	}
+	
+	public JTextArea getRulesTA() {
+		if(rulesTA == null) {
+			rulesTA = new JTextArea();
+			rulesTA.setEditable(false);
+			rulesTA.setFont(new Font("Monospaced", Font.PLAIN, 12));
+			
+			int i = 1;
+			for(String rule : rules) {
+				rulesTA.append(i++ + ":     " + rule + "\n");
+			}
+		}
+
+		return rulesTA;
 	}
 }

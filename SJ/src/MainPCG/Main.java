@@ -1,4 +1,6 @@
 package MainPCG;
+import java.util.List;
+
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 
@@ -16,8 +18,11 @@ public class Main {
 	        }
 	    }
 		
-		Screen screen = new Screen(Resource.LoadTable());
-		Solver solver = new Solver(screen);
+		String[][] matrix = Resource.LoadTable();
+		List<String> rules = Resource.LoadRules();
+		
+		Screen screen = new Screen(matrix, rules);
+		Solver solver = new Solver(screen, matrix, rules);
 		new Controller(solver, screen);
 	}
 }
