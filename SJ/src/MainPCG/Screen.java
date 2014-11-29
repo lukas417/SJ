@@ -22,18 +22,19 @@ public class Screen extends JFrame {
 
 	private JTextArea analysisTA;
 	
-	private JTextArea tableTA;
+	private TablePanel tableTA;
 	
 	private JScrollPane inputSP;
 	
 	private JScrollPane analysisSP;
 	
-	private JScrollPane tableSP;
-	
 	private JButton analyzeBT;
 	
+	private String[][] matrix;
 	
-	public Screen() {		
+	
+	public Screen(String[][] matrix) {
+		this.matrix = matrix;
 		initialize();
 	}
 	
@@ -53,7 +54,7 @@ public class Screen extends JFrame {
 				.addGroup(layout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(layout.createParallelGroup(Alignment.LEADING)
-						.addComponent(getTableSP(), Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 1164, Short.MAX_VALUE)
+						.addComponent(getTablePA(), Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 1164, Short.MAX_VALUE)
 						.addGroup(layout.createSequentialGroup()
 							.addGroup(layout.createParallelGroup(Alignment.LEADING)
 								.addComponent(getAnalyzeBT(), GroupLayout.PREFERRED_SIZE, 103, GroupLayout.PREFERRED_SIZE)
@@ -73,7 +74,7 @@ public class Screen extends JFrame {
 							.addComponent(getAnalyzeBT(), GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE))
 						.addComponent(getAnalysisSP(), GroupLayout.DEFAULT_SIZE, 631, Short.MAX_VALUE))
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(getTableSP(), GroupLayout.PREFERRED_SIZE, 336, GroupLayout.PREFERRED_SIZE)
+					.addComponent(getTablePA(), GroupLayout.PREFERRED_SIZE, 336, GroupLayout.PREFERRED_SIZE)
 					.addContainerGap())
 		);
 
@@ -100,10 +101,9 @@ public class Screen extends JFrame {
 		return analysisTA;
 	}
 	
-	public JTextArea getTableTA() {
+	public TablePanel getTablePA() {
 		if(tableTA == null) {
-			tableTA = new JTextArea();
-			tableTA.setEditable(false);
+			tableTA = new TablePanel(matrix);
 		}
 		
 		return tableTA;
@@ -125,15 +125,6 @@ public class Screen extends JFrame {
 		}
 
 		return analysisSP;
-	}
-
-	public JScrollPane getTableSP() {
-		if(tableSP == null) {
-			tableSP = new JScrollPane();
-			tableSP.setViewportView(getTableTA());
-		}
-
-		return tableSP;
 	}
 	
 	public JButton getAnalyzeBT() {

@@ -16,7 +16,7 @@ public class Main {
 	        }
 	    }
 		
-		Screen screen = new Screen();
+		Screen screen = new Screen(Resource.LoadTable());
 		Solver solver = new Solver(screen);
 		new Controller(solver, screen);
 	}
