@@ -3,6 +3,7 @@ package MainPCG;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.List;
 
 public class Resource {
@@ -42,6 +43,21 @@ public class Resource {
 			e.printStackTrace();
 		}
 		
+		return null;
+	}
+	
+	public static List<String> LoadTerminals() {
+		try {
+			String[] loadedLine = Files.readAllLines(Paths.get("table.txt")).get(0).split("\\s+");
+			
+			String[] skippedFirstElement = Arrays.copyOfRange(loadedLine, 1, loadedLine.length);
+			
+			String[] skippedLastElement = Arrays.copyOfRange(skippedFirstElement, 0, skippedFirstElement.length - 1);
+			
+			return Arrays.asList(skippedLastElement);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 }

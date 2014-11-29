@@ -20,9 +20,10 @@ public class Main {
 		
 		String[][] matrix = Resource.LoadTable();
 		List<String> rules = Resource.LoadRules();
+		List<String> terminals = Resource.LoadTerminals();
 		
 		Screen screen = new Screen(matrix, rules);
-		Solver solver = new Solver(screen, matrix, rules);
+		Solver solver = new Solver(screen, matrix, rules, terminals);
 		new Controller(solver, screen);
 	}
 }
