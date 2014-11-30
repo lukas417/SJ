@@ -76,7 +76,7 @@ public class Solver {
 
 			itemToAnalyze = item;
 
-			if (isTerminal(itemToAnalyze)) {
+			if (isTerminalWithout_LET_0_1(itemToAnalyze)) {
 				result.add(itemToAnalyze); // ak to je hned terminal
 			} else {
 
@@ -190,6 +190,19 @@ public class Solver {
 	}
 
 	private boolean isTerminal(String value) {
+		if (terminals.contains(value)) {
+			return Boolean.TRUE;
+		} else {
+			return Boolean.FALSE;
+		}
+	}
+	
+	private boolean isTerminalWithout_LET_0_1(String value) {
+		
+		if (value.equals("0") || value.equals("1")
+				|| value.equals("let"))
+			return Boolean.FALSE;
+		
 		if (terminals.contains(value)) {
 			return Boolean.TRUE;
 		} else {
