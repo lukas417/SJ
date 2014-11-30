@@ -104,17 +104,25 @@ public class Solver {
 
 		for (String terminal : terminals) {
 
-			if (terminal.equals("0") || terminal.equals("1")
-					|| terminal.equals("let"))
+			if (terminal.equals("0") || terminal.equals("1") || terminal.equals("let"))
 				continue;
 
 			if (itemToAnalyze.startsWith(terminal)) {
 
-				itemToAnalyze = itemToAnalyze.replaceFirst(terminal, "");
+				itemToAnalyze = itemToAnalyze.replace(terminal, "");
 
 				return terminal;
-			} else if (itemToAnalyze.endsWith(terminal)) {
-				itemToAnalyze = itemToAnalyze.replaceFirst(terminal, "");
+			}
+		}
+		
+		for (String terminal : terminals) {
+
+			if (terminal.equals("0") || terminal.equals("1") || terminal.equals("let"))
+				continue;
+
+			if (itemToAnalyze.endsWith(terminal)) {
+
+				itemToAnalyze = itemToAnalyze.replace(terminal, "");
 
 				return terminal;
 			}
