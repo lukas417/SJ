@@ -1,7 +1,8 @@
 package MainPCG;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 public class Solver {
 
@@ -12,35 +13,148 @@ public class Solver {
 	private List<String> rules;
 
 	private List<String> terminals;
+	
+	private List<String> nonTerminals;
 
-	public Solver(Screen screen, String[][] matrix, List<String> rules,
-			List<String> terminals) {
+	public Solver(Screen screen, String[][] matrix, List<String> rules) {
 		this.screen = screen;
 		this.matrix = matrix;
 		this.rules = rules;
-		this.terminals = terminals;
+
+		findTerminals();
+		findNonTerminals();
 	}
 
 	public void solve(String input) {
+		Stack<String> inputStack = fillInputStack(input.split("\\s+"));
+		Stack<String> workStack = fillWorkStack();
+		Stack<Integer> rulesStack = new Stack<Integer>();
 		
-		Automat automat = new Automat(Arrays.asList(input.split("\\s+")));
-
-		//Main logic to cheek input code
-		while(!automat.GetActualInput().isEmpty())
-		{
-			//Example of use this method
-			if (isTerminal(automat.PopFromInput())) {
-				// Do something with terminal
+		while(!workStack.isEmpty()) {
+			if(!checkTops(inputStack, workStack)) {
+				// TODO prazdny vstupny stack a neprazdny pracovny
+			}
+			
+			String element = workStack.pop();
+			if(isTerminal(element)) {
+				if(inputStack.pop().equals(element)) {
+					System.out.println();
+					// INFO - akceptujem terminal
+				} else {
+					// TODO Error - neocakavany symbol 
+				} 
+			} else if(isNonTerminal(element)) {
+				String inputElement = inputStack.peek();
+				String ruleNumberString = findRule(element, inputElement);
+				if(!"".equals(ruleNumberString)) {
+					Integer ruleNumber = Integer.decode(ruleNumberString);
+					String[] rulesToAdd = getRuleByNumber(ruleNumber);
+					addRulesToWorkStack(workStack, rulesToAdd);
+					rulesStack.push(ruleNumber);
+				} else {
+					// TODO pravidlo neexistuje
+				}
 			} else {
+				// TODO neznamy symbol
+			}
+		}
+		
+		if(!inputStack.isEmpty()) {
+			// TODO prazdny pracovny stack a neprazdny vstupny
+		}
+	}
+
+	private String[] getRuleByNumber(int ruleNumber) {
+		String ruleToParse = rules.get(ruleNumber - 1);
+		ruleToParse = ruleToParse.substring(ruleToParse.indexOf("=") + 2);
+		ruleToParse = ruleToParse.replace("'", "");
+		
+		return ruleToParse.split("\\s+");
+	}
+	
+	private boolean checkTops(Stack<String> inputStack, Stack<String> workStack) {
+		if(inputStack.isEmpty()) {
+			return Boolean.FALSE;
+		} else {
+			screen.getAnalysisTA().append("Vrch vstupného zásobníka: " + inputStack.peek() + ", " + "Vrch pracovného zásobníka: " + workStack.peek() + "\n");
+		}
+		
+		return Boolean.TRUE;
+		
+	}
+	
+	public String findRule(String nonTerminal, String terminal) {
+		int i;
+		for(i = 1; i < matrix[0].length; ++i) {
+			if(terminal.equals(matrix[0][i])) {
+				break;
+			}
+		}
+		
+		int j;
+		for(j = 1; j < matrix.length; ++j) {
+			if(nonTerminal.equals(matrix[j][0])) {
+				break;
+			}
+		}
+		
+		return matrix[j][i];
+	}
+
+	public Stack<String> fillInputStack(String[] input) {
+		Stack<String> inputStack = new Stack<String>();
+		
+		for(int i = input.length - 1; i >= 0; --i) {
+			inputStack.push(input[i]);
+		}
+		
+		return inputStack;
+	}
+	
+	public Stack<String> fillWorkStack() {
+		Stack<String> workStack = new Stack<String>();
+		workStack.push(matrix[1][0]);
+		
+		return workStack;
+	}
+	
+	private void addRulesToWorkStack(Stack<String> workStack, String[] rulesToAdd) {
+		for(int i = rulesToAdd.length - 1; i >=0; --i) {
+			if(!"EPSILON".equals(rulesToAdd[i])) {
+				workStack.push(rulesToAdd[i]);
 			}
 		}
 	}
 
 	private boolean isTerminal(String value) {
-		if (terminals.indexOf(value) == -1) {
-			return false;
+		if(terminals.contains(value)) {
+			return Boolean.TRUE;
 		} else {
-			return true;
+			return Boolean.FALSE;
+		}
+	}
+	
+	private boolean isNonTerminal(String value) {
+		if(nonTerminals.contains(value)) {
+			return Boolean.TRUE;
+		} else {
+			return Boolean.FALSE;
+		}
+	}
+	
+	public void findTerminals() {
+		terminals = new ArrayList<String>();
+		
+		for(int i = 1; i < matrix[0].length - 1; ++i) {
+			 terminals.add(matrix[0][i]);
+		}
+	}
+	
+	public void findNonTerminals() {
+		nonTerminals = new ArrayList<String>();
+		
+		for(int i = 1; i < matrix.length; ++i) {
+			 nonTerminals.add(matrix[i][0]);
 		}
 	}
 }
