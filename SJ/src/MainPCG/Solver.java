@@ -1,5 +1,6 @@
 package MainPCG;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -80,16 +81,10 @@ public class Solver {
 				result.add(itemToAnalyze); // ak to je hned terminal
 			} else {
 
-				String foundTerminal;
+				ArrayList<String> foundTerminals;
 
-				while ((foundTerminal = findSomeTerminal()) != "") { // parsuj terminaly okrem: 0, 1, let
-					result.add(foundTerminal);
-				}
-
-				if (!itemToAnalyze.isEmpty()) { // parsuj terminaly: 0, 1, let, plus ostatny bordel znakov: @!%^&*.....
-					for (char charItem : itemToAnalyze.toCharArray()) {
-						result.add(Character.toString(charItem));
-					}
+				while (!(foundTerminals = findSomeTerminals()).isEmpty()) {
+					result.addAll(foundTerminals);
 				}
 			}
 		}
@@ -97,10 +92,14 @@ public class Solver {
 		return result.toArray(new String[result.size()]);
 	}
 
-	private String findSomeTerminal() {
+	private ArrayList<String> findSomeTerminals() {
 
+		ArrayList<String> result = new ArrayList<String>();
+		String startTerminal = null;
+		String endTerminal = null;
+		
 		if (itemToAnalyze == null || itemToAnalyze.isEmpty())
-			return "";
+			return result;
 
 		for (String terminal : terminals) {
 
@@ -111,7 +110,7 @@ public class Solver {
 
 				itemToAnalyze = itemToAnalyze.replace(terminal, "");
 
-				return terminal;
+				startTerminal = terminal;
 			}
 		}
 		
@@ -124,11 +123,27 @@ public class Solver {
 
 				itemToAnalyze = itemToAnalyze.replace(terminal, "");
 
-				return terminal;
+				endTerminal = terminal;
 			}
 		}
 
-		return "";
+		if (startTerminal != null) {
+			result.add(startTerminal);
+		}
+
+		if (!itemToAnalyze.isEmpty()) { // parsuj terminaly: 0, 1, let, plus ostatny bordel inych znakov, napriklad: @!%^&*.....
+			for (char charItem : itemToAnalyze.toCharArray()) {
+				result.add(Character.toString(charItem));
+			}
+			
+			itemToAnalyze = "";
+		}
+
+		if (endTerminal != null) {
+			result.add(endTerminal);
+		}
+		
+		return result;
 	}
 
 	private String[] getRuleByNumber(int ruleNumber) {
