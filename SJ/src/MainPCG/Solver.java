@@ -121,29 +121,37 @@ public class Solver {
 		if (itemToAnalyze == null || itemToAnalyze.isEmpty())
 			return result;
 
-		for (String terminal : terminals) {
-
-			if (terminal.equals("let"))
-				continue;
-
-			if (itemToAnalyze.startsWith(terminal)) {
-
-				itemToAnalyze = itemToAnalyze.replace(terminal, "");
-
-				startTerminal = terminal;
+		if (itemToAnalyze != null || !itemToAnalyze.isEmpty()) {
+			for (String terminal : terminals) {
+	
+				if (terminal.equals("let"))
+					continue;
+	
+				if (itemToAnalyze.startsWith(terminal)) {
+	
+					itemToAnalyze = itemToAnalyze.substring(terminal.length());
+	
+					startTerminal = terminal;
+					
+					break;
+				}
 			}
 		}
 		
-		for (String terminal : terminals) {
-
-			if (terminal.equals("let"))
-				continue;
-
-			if (itemToAnalyze.endsWith(terminal)) {
-
-				itemToAnalyze = itemToAnalyze.replace(terminal, "");
-
-				endTerminal = terminal;
+		if (itemToAnalyze != null || !itemToAnalyze.isEmpty()) {
+			for (String terminal : terminals) {
+	
+				if (terminal.equals("let"))
+					continue;
+	
+				if (itemToAnalyze.endsWith(terminal)) {
+	
+					itemToAnalyze = itemToAnalyze.substring(0, itemToAnalyze.length() - terminal.length());
+	
+					endTerminal = terminal;
+					
+					break;				
+				}
 			}
 		}
 
