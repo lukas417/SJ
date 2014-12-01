@@ -32,6 +32,9 @@ public class TablePanel extends JScrollPane {
 			for(int i = 0; i < matrix[0].length; ++i) {
 				column = transitionTB.getColumnModel().getColumn(i);
 			    column.setCellEditor(null);
+			    if(i == 0) {
+					column.setWidth(200);
+				}
 			}
 		}
 		
