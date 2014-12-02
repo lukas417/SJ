@@ -31,7 +31,9 @@ public class Solver {
 		Stack<String> inputStack = fillInputStack(getParsedInput(input));
 		Stack<String> workStack = fillWorkStack();
 		Stack<Integer> rulesStack = new Stack<Integer>();
-
+		
+		screen.getAnalysisTA().setText(""); // Clear output screen
+		
 		while (!workStack.isEmpty()) {
 			if (!checkTops(inputStack, workStack)) {
 				screen.getAnalysisTA().append("Prazdny vstup, neprazdny pracovny zasobnik\n");
@@ -46,7 +48,7 @@ public class Solver {
 				} else if(stackElem.equals(element)) {
 					screen.getAnalysisTA().append("Akceptujem: " + stackElem + "\n");
 				} else {
-					screen.getAnalysisTA().append("Neocakavany symbol\n");
+					screen.getAnalysisTA().append("**********************\n* Neocakavany symbol *\n**********************\n");
 				}
 			} else if(isNonTerminal(element)) {
 				String inputElement = inputStack.peek();
@@ -59,13 +61,13 @@ public class Solver {
 						addRulesToWorkStack(workStack, rulesToAdd);
 						rulesStack.push(ruleNumber);
 					} else {
-						screen.getAnalysisTA().append("Neexistuje pravidlo\n");
+						screen.getAnalysisTA().append("***********************\n* Neexistuje pravidlo *\n***********************\n");
 					}
 				} else {
 					inputStack.pop(); // IF unknown symbol, remove it from stack
 				}
 			} else {
-				screen.getAnalysisTA().append("Neznamy symbol\n");
+				screen.getAnalysisTA().append("******************\n* Neznamy symbol *\n******************\n");
 			}
 		}
 
@@ -81,7 +83,7 @@ public class Solver {
 			return "let";
 		}
 		
-		screen.getAnalysisTA().append("Nepovolený symbol: " + inputElement + "\n");
+		screen.getAnalysisTA().append("Nepovolenï¿½ symbol: " + inputElement + "\n");
 		return null;
 	}
 
@@ -103,7 +105,7 @@ public class Solver {
 
 			itemToAnalyze = item;
 
-			if (isTerminalWithout_LET_0_1(itemToAnalyze)) {
+			if (isTerminalExceptLET(itemToAnalyze)) {
 				result.add(itemToAnalyze); // ak to je hned terminal
 			} else {
 
@@ -254,7 +256,7 @@ public class Solver {
 		}
 	}
 	
-	private boolean isTerminalWithout_LET_0_1(String value) {
+	private boolean isTerminalExceptLET(String value) {
 		
 		if (value.equals("let"))
 			return Boolean.FALSE;
