@@ -62,6 +62,11 @@ public class Solver {
 						rulesStack.push(ruleNumber);
 					} else {
 						screen.getAnalysisTA().append("***********************\n* Neexistuje pravidlo *\n***********************\n");
+
+						if (isLetter(inputElement) || isNumber(inputElement)) {
+							inputStack.pop();
+							workStack.push(element);
+						}
 					}
 				} else {
 					inputStack.pop(); // IF unknown symbol, remove it from stack
@@ -89,6 +94,14 @@ public class Solver {
 
 	private boolean isLetter(String element) {
 		if(element.length() == 1 && Character.isLetter(element.charAt(0))) {
+			return Boolean.TRUE;
+		}
+		
+		return Boolean.FALSE;
+	}
+	
+	private boolean isNumber(String element) {
+		if(element.length() == 1 && Character.isDigit(element.charAt(0))) {
 			return Boolean.TRUE;
 		}
 		
