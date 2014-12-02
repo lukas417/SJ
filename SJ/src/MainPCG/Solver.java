@@ -1,6 +1,5 @@
 package MainPCG;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -35,7 +34,8 @@ public class Solver {
 
 		while (!workStack.isEmpty()) {
 			if (!checkTops(inputStack, workStack)) {
-				screen.getAnalysisTA().append("Prazdny vstup, neprazdny pracovny zasobnik");
+				screen.getAnalysisTA().append("Prazdny vstup, neprazdny pracovny zasobnik\n");
+				return;
 			}
 
 			String element = workStack.pop();
@@ -46,26 +46,31 @@ public class Solver {
 				} else if(stackElem.equals(element)) {
 					screen.getAnalysisTA().append("Akceptujem: " + stackElem + "\n");
 				} else {
-					screen.getAnalysisTA().append("Neockavany symbol");
+					screen.getAnalysisTA().append("Neocakavany symbol\n");
 				}
 			} else if(isNonTerminal(element)) {
 				String inputElement = inputStack.peek();
-				String ruleNumberString = findRule(element, translate(inputElement));
-				if (!"".equals(ruleNumberString)) {
-					Integer ruleNumber = Integer.decode(ruleNumberString);
-					String[] rulesToAdd = getRuleByNumber(ruleNumber);
-					addRulesToWorkStack(workStack, rulesToAdd);
-					rulesStack.push(ruleNumber);
+				inputElement = translate(inputElement);
+				if(inputElement != null) {
+					String ruleNumberString = findRule(element, inputElement);
+					if (!"".equals(ruleNumberString)) {
+						Integer ruleNumber = Integer.decode(ruleNumberString);
+						String[] rulesToAdd = getRuleByNumber(ruleNumber);
+						addRulesToWorkStack(workStack, rulesToAdd);
+						rulesStack.push(ruleNumber);
+					} else {
+						screen.getAnalysisTA().append("Neexistuje pravidlo\n");
+					}
 				} else {
-					screen.getAnalysisTA().append("Neexistuje pravidlo");
+					inputStack.pop(); // IF unknown symbol, remove it from stack
 				}
 			} else {
-				screen.getAnalysisTA().append("Neznamy symbol");
+				screen.getAnalysisTA().append("Neznamy symbol\n");
 			}
 		}
 
 		if(!inputStack.isEmpty()) {
-			screen.getAnalysisTA().append("Prazdny pracovny zasobnik, neprazdny vstup");
+			screen.getAnalysisTA().append("Prazdny pracovny zasobnik, neprazdny vstup\n");
 		}
 	}
 	
@@ -76,6 +81,7 @@ public class Solver {
 			return "let";
 		}
 		
+		screen.getAnalysisTA().append("Nepovolený symbol: " + inputElement + "\n");
 		return null;
 	}
 
@@ -121,29 +127,37 @@ public class Solver {
 		if (itemToAnalyze == null || itemToAnalyze.isEmpty())
 			return result;
 
-		for (String terminal : terminals) {
-
-			if (terminal.equals("let"))
-				continue;
-
-			if (itemToAnalyze.startsWith(terminal)) {
-
-				itemToAnalyze = itemToAnalyze.replace(terminal, "");
-
-				startTerminal = terminal;
+		if (itemToAnalyze != null || !itemToAnalyze.isEmpty()) {
+			for (String terminal : terminals) {
+	
+				if (terminal.equals("let"))
+					continue;
+	
+				if (itemToAnalyze.startsWith(terminal)) {
+	
+					itemToAnalyze = itemToAnalyze.substring(terminal.length());
+	
+					startTerminal = terminal;
+					
+					break;
+				}
 			}
 		}
 		
-		for (String terminal : terminals) {
-
-			if (terminal.equals("let"))
-				continue;
-
-			if (itemToAnalyze.endsWith(terminal)) {
-
-				itemToAnalyze = itemToAnalyze.replace(terminal, "");
-
-				endTerminal = terminal;
+		if (itemToAnalyze != null || !itemToAnalyze.isEmpty()) {
+			for (String terminal : terminals) {
+	
+				if (terminal.equals("let"))
+					continue;
+	
+				if (itemToAnalyze.endsWith(terminal)) {
+	
+					itemToAnalyze = itemToAnalyze.substring(0, itemToAnalyze.length() - terminal.length());
+	
+					endTerminal = terminal;
+					
+					break;				
+				}
 			}
 		}
 
@@ -185,7 +199,7 @@ public class Solver {
 	}
 
 	public String findRule(String nonTerminal, String terminal) {
-		screen.getAnalysisTA().append("Vyhladavam pre " + nonTerminal + ", " + terminal);
+		screen.getAnalysisTA().append("Vyhladavam pre " + nonTerminal + ", " + terminal + "\n");
 		
 		int i;
 		for (i = 1; i < matrix[0].length; ++i) {
